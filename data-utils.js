@@ -1,10 +1,13 @@
-function addFriend(friends, name) {
+import { displayFriends } from './app.js';
+
+export function addFriend(friends, name) {
     const newFriend = {
         name: name || `Friend #${Math.floor(Math.random() * 1000)}`,
         satisfaction: 1
     };
     
     friends.push(newFriend);
+    displayFriends();
 }
 
 export default function findFriendByName(name, friends) {

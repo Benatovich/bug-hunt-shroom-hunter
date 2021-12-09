@@ -3,9 +3,10 @@ import { renderMushroom, renderFriend } from './render-utils.js';
 import { addFriend, findFriendByName } from './data-utils.js';
 
 const friendsEl = document.querySelector('.friends');
+const friendInputEl = document.getElementById('friend-input');
 const mushroomsEl = document.querySelectorAll('.mushrooms');
-const addMushroomButton = document.getElementById('add-mushroom');
-const addFriendButton = document.getElementById('add-friend');
+const addMushroomButton = document.getElementById('add-mushroom-button');
+const addFriendButton = document.getElementById('add-friend-button');
 // initialize state
 
 let mushroomCount = 3;
@@ -29,21 +30,42 @@ const friendData = [
     },
 ];
 
-function displayFriends() {
-    for (let friend of friendData) {
-        const friendEl = renderFriend(friendData);
+addFriendButton.addEventListener('click', () => {
+    const name = friendInputEl.value;
+    addFriend(name, friendData);
 
+    friendInputEl.value = '';
+
+    displayFriends();
+});
+
+addMushroomButton.addEventListener('click', () => {
+    if (Math.random() > .5) {
+        alert('found a mushroom!');
+
+        mushroomCount++;
+        displayMushrooms();
+    } else {
+        alert('no luck!');
+    }
+});
+
+function displayFriends() {
+    friendsEl.textContent = '';
+    for (let friend of friendData) {
+        const friendEl = renderFriend(friend);
+        
         friendEl.addEventListener('click', () => {
             const friendInState = findFriendByName(friend.name, friendData);
-    
+            
             if (mushroomCount === 0) {
                 alert('no mushrooms left! go forage for some more');
             }
             if (mushroomCount > 0 && friendInState.satisfaction < 3) {
-                friendInState.happiness++;
-                mushroomCount++;
-        
-                displayFriends(friendData);
+                friendInState.satisfaction++;
+                mushroomCount--;
+                
+                displayFriends();
                 displayMushrooms();    
             }
         });
@@ -54,35 +76,13 @@ function displayFriends() {
 
 
 function displayMushrooms() { 
+    mushroomsEl.textContent = '';
     for (let i = 0; i < mushroomCount; i++) {
         const mushroomEl = renderMushroom();
 
         mushroomsEl.append(mushroomEl);
     }
 }
-
-
-addFriendButton.addEventListener('click', () => {
-    const name = friendInputEl;
-
-    addFriend(name, friendData);
-
-    friendInputEl.value = '';
-
-    displayFriends(friendData);
-});
-
-
-addMushroomButton.addEventListener('click', () => {
-    if (Math.random() > .5) {
-        alert('found a mushroom!');
-
-        mushroomCount;
-        displayMushrooms();
-    } else {
-        alert('no luck!');
-    }
-});
 
 displayFriends();
 
